@@ -1,0 +1,64 @@
+#include <stdio.h>
+
+void calculate_delay(int objects, int parallel, int persistent) {
+    int RTT0 = 3;  
+    int RTT1 = 20;
+    int RTT2 = 26;
+    int totalDNS = RTT0 + RTT1 + RTT2;
+    
+    int RTTHTTP = 47;  
+
+    int singleOBJ = totalDNS + 2 * RTTHTTP;
+    
+    if(objects == 1){
+        printf("Time for 1 object: %d ms\n", singleOBJ);
+        return;
+    }
+    
+    
+
+    if (parallel == 1){
+        // non-persistent without parallel
+        if (!persistent) {
+            int total = singleOBJ + 2 * RTTHTTP * (objects - 1);
+            printf("Total time: %d ms \n", total);
+        }
+        // persistent without parallel
+        else{
+            int total = singleOBJ + RTTHTTP * (objects - 1);
+            printf("Total time: %d ms \n", total);
+        }
+    } 
+    else{
+        // non-persistent with parallel
+        if (!persistent){
+            int p = (objects + parallel - 1) / parallel;
+            int total = singleOBJ + 2 * RTTHTTP * p;
+            printf("Total time: %d ms \n", total);
+        }
+        // persistent with parallel
+        else{
+        int total = singleOBJ + RTTHTTP * (objects - 1);
+            printf("Total time: %d ms \n", total);
+        }
+    } 
+    
+    
+}
+
+
+
+int main() {
+    int objects, parallel, persistent;
+
+    printf("How many Objects: ");
+    scanf("%d", &objects);
+    printf("How many parallel TCP connections: ");
+    scanf("%d", &parallel);
+    printf("(1) for persistent (0) for non-persistent : ");
+    scanf("%d", &persistent);
+
+    calculate_delay(objects, parallel, persistent);
+
+    return 0;
+}
